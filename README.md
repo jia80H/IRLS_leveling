@@ -24,8 +24,6 @@ IRLS_leveling/
 │   └── *.npz               # Grid files
 ├── database/               # Database utilities
 │   └── process_aeromag_csv.py
-├── evaluation/             # Evaluation metrics
-│   └── evaluate.py
 ├── gridding/               # Gridding methods
 │   ├── bidirectional_gridding.py
 │   ├── minimum_curvature_gridding.py
@@ -61,69 +59,12 @@ IRLS_leveling/
 5. **Traverse Line Leveling**: Fit polynomial trends to traverse lines using IRLS-Huber
 6. **Final Evaluation**: Calculate SCI metrics at intersections
 
-
 ## Installation
 
 ```bash
 pip install numpy pandas scipy shapely matplotlib
 ```
 
-## Quick Start
-
-```python
-from leveling.lev_tie_line import (
-    tieline_intersection,
-    load_correction,
-    statistical_level,
-    generate_intersection_mask
-)
-from evaluation.evaluate import calculate_metrics_for_sci
-
-# 1. Calculate intersections
-tieline_intersection(
-    db_path='./00ge_data/example.db',
-    LineID='Line', xch='x', ych='y', data_ch='Mag',
-    output_tab='Tie_intersection'
-)
-
-# 2. Generate mask (optional)
-generate_intersection_mask(
-    db_path='./00ge_data/example.db',
-    input_tab='Tie_intersection',
-    output_tab='Tie_intersection_masked',
-    sigma_threshold=3
-)
-
-# 3. Load corrections for tie lines
-load_correction(
-    db_path='./00ge_data/example.db',
-    intersection_table='Tie_intersection',
-    main_table='mag_data',
-    line_id_col='Line',
-    mask_channel='MASK',
-    process_line_types='TIE'
-)
-
-# 4. Statistical leveling with robust mode
-statistical_level(
-    db_path='./00ge_data/example.db',
-    table='mag_data',
-    line_id_col='Line',
-    type_filter='TIE',
-    input_ch='Mag',
-    output_ch='LEVELLED_IRLS',
-    trend_order=1,
-    robust_mode=True  # Enable IRLS-Huber
-)
-
-# 5. Repeat for traverse lines (LINE)
-# ... (see main.ipynb for complete pipeline)
-
-# 6. Evaluate results
-eval_result = calculate_metrics_for_sci(
-    db_path, 'Final_intersection', 'Tie_intersection_masked'
-)
-```
 
 ## Evaluation Metrics
 
@@ -166,7 +107,6 @@ See `main.ipynb` for complete benchmarking results comparing:
 ## License
 
 MIT License
-
 
 ## Contact
 
